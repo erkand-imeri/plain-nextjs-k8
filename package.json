@@ -1,0 +1,29 @@
+{
+  "name": "zenbox-apps",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:snapshot": "turbo run test:snapshot",
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "eslint-config-custom": "latest",
+    "jest": "^28.1.1",
+    "prettier": "2.5.0",
+    "turbo": "1.5.5"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=14.0.0"
+  },
+  "packageManager": "yarn@1.22.19"
+}

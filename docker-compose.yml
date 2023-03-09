@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  plain-nextjs:
+    container_name: plain_nextjs
+    build:
+      context: .
+      dockerfile: ./apps/plain-nextjs/Dockerfile
+      target: deps
+    working_dir: /app
+    restart: always
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./apps/plain-nextjs:/app
+      - ./node_modules:/app/node_modules
+    ports:
+      - "3005:3005"
+    command: yarn dev
+
+

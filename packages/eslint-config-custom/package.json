@@ -1,0 +1,17 @@
+{
+  "name": "eslint-config-custom",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "script": {
+    "build": "yarn"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-json": "^3.1.0",
+    "eslint-plugin-vue": "^7.20.0",
+    "prettier": "2.5.0"
+  }
+}

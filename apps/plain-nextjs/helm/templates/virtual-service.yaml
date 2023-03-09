@@ -1,0 +1,40 @@
+{{ if .Values.istio.enabled }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "common.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+spec:
+  hosts:
+  {{- range .Values.istio.hosts }}
+  - {{ . }}
+  {{- end }}
+  gateways:
+  {{- range .Values.istio.gateways }}
+  - {{ . }}
+  {{- end }}
+  http:
+    - match:
+      - uri:
+         prefix: {{ .Values.istio.redirectAppToPath }}
+      route:
+      - destination:
+          host: {{ template "common.fullname" . }}
+          port:
+            number: {{ .Values.ports.http }}
+
+      corsPolicy:
+        allowCredentials: {{ .Values.istio.cors.allowCredentials }}
+        allowMethods:
+        {{- range .Values.istio.cors.allowMethods }}
+        - {{ . }}
+        {{- end }}
+        allowOrigin:
+        {{- range .Values.istio.cors.allowOrigin }}
+        - {{ . }}
+        {{- end }}
+        maxAge: {{ .Values.istio.cors.maxAge }}
+{{ end }}

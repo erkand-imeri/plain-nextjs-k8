@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+    prometheus: "false"
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 10%
+
+  progressDeadlineSeconds: 600
+  minReadySeconds: 60
+  revisionHistoryLimit: 150
+
+  template:
+    metadata:
+      labels:
+        admission.datadoghq.com/enabled: "true"
+        tags.datadoghq.com/service: {{ .Release.Name }}.{{ .Release.Namespace }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | trunc 63 | trimSuffix "-" | quote }}
+        tags.datadoghq.com/env: {{ .Values.app.serviceEnvironment }}
+        {{- include "common.labels" . | indent 8 }}
+        prometheus: "false"
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "true"
+        ad.datadoghq.com/{{ .Release.Name }}.logs: "[{\"source\":\"bocs-app\", \"service\": \"{{ .Release.Name }}.{{ .Release.Namespace }}\"}]"
+
+    spec:
+      restartPolicy: Always
+      serviceAccountName: {{ template "common.serviceAccountName" . }}
+      terminationGracePeriodSeconds: 10
+
+      volumes:
+        - name: zen-app-keys
+          secret:
+            secretName: {{ .Values.secret.name }}
+            items:
+              - key: zen-pub-key
+                path: zen-pub.pem
+      containers:
+        - name: {{ .Chart.Name }}
+          image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: '{{ .Release.Name }}-config'
+          ports:
+            - name: http
+              containerPort: {{ .Values.ports.http }}
+
+          volumeMounts:
+            - name: zen-app-keys
+              readOnly: true
+              mountPath: /config
+
+          resources:
+            requests: {{ .Values.resources.requests | toJson }}
+            limits: {{ .Values.resources.limits | toJson }}

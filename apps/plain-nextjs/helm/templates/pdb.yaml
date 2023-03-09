@@ -1,0 +1,13 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+
+metadata:
+  name: {{ template "common.fullname" . }}-pdb
+
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  maxUnavailable: 1

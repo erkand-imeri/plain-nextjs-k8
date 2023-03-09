@@ -1,0 +1,23 @@
+---
+apiVersion: v2
+
+name: {{ GIT_PROJECT_NAME }}
+version: {{ GIT_TAG }}
+
+appVersion: {{ GIT_TAG }}
+description: {{ GIT_PROJECT_DESCRIPTION }}
+home:
+
+maintainers:
+  - name: "Random"
+    email: random@gmail.com
+
+dependencies:
+  - name: common
+    version: ~0.1.0
+    repository: "@random"
+    import-values:
+      - child: global
+        parent: global
+      - child: labels
+        parent: labels

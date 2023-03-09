@@ -1,0 +1,54 @@
+---
+team: random-team-project
+
+project:
+  name: {{ GIT_PROJECT_NAME }}
+  version: {{ GIT_TAG }}
+  description: {{ GIT_PROJECT_DESCRIPTION }}
+  url:
+
+image:
+  repository:
+  tag: {{ GIT_TAG }}
+  pullPolicy: IfNotPresent
+
+ports:
+  http: 3005
+  management: 3005
+
+replication:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCpuUtilization: 90
+  targetMemoryUtilization: 90
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+istio:
+  enabled:
+  gateways: []
+  hosts: []
+  cors:
+    allowCredentials: true
+    allowMethods: []
+    allowOrigin: []
+    maxAge: 24h
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  secretname:
+
+resources:
+  requests: {}
+  limits: {}
+
+app:
+  randomValue:
